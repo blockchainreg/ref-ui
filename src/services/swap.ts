@@ -28,6 +28,7 @@ import {
   calculate_dx_float,
   calculate_dy_float,
   formatPoolNew,
+  checkIntegerSumOfAllocations,
 } from './parallelSwapLogic';
 
 import {
@@ -43,6 +44,7 @@ import {
   getPool,
   getStablePool,
   StablePool,
+  getRefPoolsByToken1ORToken2,
 } from './pool';
 import {
   checkTokenNeedsStorageDeposit,
@@ -59,6 +61,8 @@ import { BigNumber } from 'bignumber.js';
 import _, { filter } from 'lodash';
 import { getSwappedAmount } from './stable-swap';
 import { STABLE_LP_TOKEN_DECIMALS } from '~components/stableswap/AddLiquidity';
+
+import { getSmartRouteSwapActions, stableSmart } from './smartRouteLogic';
 
 // Big.strict = false;
 const FEE_DIVISOR = 10000;
@@ -84,6 +88,8 @@ interface EstimateSwapOptions {
 
 export interface EstimateSwapView {
   estimate: string;
+  inputToken?: string;
+  outputToken?: string;
   pool: Pool;
   intl?: any;
   status?: PoolMode;
@@ -197,6 +203,36 @@ export const estimateSwap = async ({
     setLoadingData,
     loadingTrigger,
   });
+
+  // get related two tokens pools
+  const orpools = await getRefPoolsByToken1ORToken2(tokenIn.id, tokenOut.id);
+
+  // let actions = await getSmartRouteSwapActions(
+  //   orpools,
+  //   tokenIn.id,
+  //   tokenOut.id,
+  //   parsedAmountIn,
+  //   0.1 //TODO -- put in the slippageTolerance value HERE!!!
+  // );
+
+  // console.log('FOUND SMART ROUTE ACTIONS TO BE...');
+  // console.log(actions);
+  // console.log(STABLE_POOL_ID);
+  let stableSmartActions = await stableSmart(
+    orpools,
+    tokenIn.id,
+    tokenOut.id,
+    parsedAmountIn,
+    0.1
+  );
+
+  console.log('STABLE SMART HYBRID ACTIONS ARE...');
+  console.log(stableSmartActions);
+
+  return stableSmartActions;
+
+  // TODO: Once I get the smartRouteLogic file finished, I should be able to return stableSmartActions...
+  // return stableSmartActions;
 
   const maxLPPool = _.maxBy(pools, (p) => getLiquidity(p, tokenIn, tokenOut));
 
@@ -329,7 +365,7 @@ export const estimateSwap = async ({
       });
       [pool1, pool2] = BestPoolPair;
 
-      const tokenMidId = BestPoolPair[0].tokenIds.find((t) =>
+      const tokenMidId = BestPoolPair[0].tokenIds.find((t: any) =>
         BestPoolPair[1].tokenIds.includes(t)
       );
 
@@ -539,6 +575,32 @@ SwapOptions) => {
       const tokenMid = swapsToDo[1].token;
 
       await registerToken(tokenOut);
+      console.log('estimates,', swapsToDo);
+
+      const swapActions = swapsToDo.map((action, i) => {
+        const ifSecondRoute = ONLY_ZEROS.test(action.pool.partialAmountIn);
+
+        return ifSecondRoute
+          ? {
+              pool_id: action.pool.id,
+              token_in: action.inputToken,
+              token_out: action.outputToken,
+              min_amount_out: round(
+                tokenOut.decimals,
+                toNonDivisibleNumber(
+                  tokenOut.decimals,
+                  percentLess(slippageTolerance, action.estimate)
+                )
+              ),
+            }
+          : {
+              pool_id: action.pool.id,
+              token_in: action.inputToken,
+              token_out: action.outputToken,
+              amount_in: action.pool.partialAmountIn,
+              min_amount_out: '0',
+            };
+      });
 
       transactions.push({
         receiverId: tokenIn.id,
@@ -550,30 +612,31 @@ SwapOptions) => {
               amount: toNonDivisibleNumber(tokenIn.decimals, amountIn),
               msg: JSON.stringify({
                 force: 0,
-                actions: [
-                  {
-                    pool_id: swapsToDo[0].pool.id,
-                    token_in: tokenIn.id,
-                    token_out: tokenMid.id,
-                    amountIn: round(
-                      tokenIn.decimals,
-                      toNonDivisibleNumber(tokenIn.decimals, amountIn)
-                    ),
-                    min_amount_out: '0',
-                  },
-                  {
-                    pool_id: swapsToDo[1].pool.id,
-                    token_in: tokenMid.id,
-                    token_out: tokenOut.id,
-                    min_amount_out: round(
-                      tokenOut.decimals,
-                      toNonDivisibleNumber(
-                        tokenOut.decimals,
-                        percentLess(slippageTolerance, swapsToDo[1].estimate)
-                      )
-                    ),
-                  },
-                ],
+                actions: swapActions,
+                // actions: [
+                //   {
+                //     pool_id: swapsToDo[0].pool.id,
+                //     token_in: tokenIn.id,
+                //     token_out: tokenMid.id,
+                //     amountIn: round(
+                //       tokenIn.decimals,
+                //       toNonDivisibleNumber(tokenIn.decimals, amountIn)
+                //     ),
+                //     min_amount_out: '0',
+                //   },
+                //   {
+                //     pool_id: swapsToDo[1].pool.id,
+                //     token_in: tokenMid.id,
+                //     token_out: tokenOut.id,
+                //     min_amount_out: round(
+                //       tokenOut.decimals,
+                //       toNonDivisibleNumber(
+                //         tokenOut.decimals,
+                //         percentLess(slippageTolerance, swapsToDo[1].estimate)
+                //       )
+                //     ),
+                //   },
+                // ],
               }),
             },
             gas: '180000000000000',

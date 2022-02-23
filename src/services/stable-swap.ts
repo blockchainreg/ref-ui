@@ -192,6 +192,26 @@ export const instantSwap = async ({
   amountIn,
   minAmountOut,
 }: SwapOptions) => {
+  // get stable swap instant transactions
+  const transactions = await instantSwapGetTransactions({
+    pool,
+    tokenIn,
+    tokenOut,
+    amountIn,
+    minAmountOut,
+  });
+  console.log('STABLESWAP TRANSACTIONS ARE...');
+  console.log(transactions);
+  return executeMultipleTransactions(transactions);
+};
+
+export const instantSwapGetTransactions = async ({
+  pool,
+  tokenIn,
+  tokenOut,
+  amountIn,
+  minAmountOut,
+}: SwapOptions) => {
   const swapAction = {
     pool_id: pool?.id,
     token_in: tokenIn?.id,
@@ -250,7 +270,8 @@ export const instantSwap = async ({
       functionCalls: tokenInActions,
     });
 
-    return executeMultipleTransactions(transactions);
+    return transactions;
+    // return executeMultipleTransactions(transactions);
   }
 };
 

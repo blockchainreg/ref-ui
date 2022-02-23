@@ -282,6 +282,14 @@ export const getPoolsByTokens = async ({
   return filtered_pools;
 };
 
+export const getRefPoolsByToken1ORToken2 = async (
+  tokenId1: string,
+  tokenId2: string
+) => {
+  return await db.queryPoolsByTokens2(tokenId1, tokenId2);
+  //return await db.poolsTokens;
+};
+
 export const getPool = async (id: number): Promise<Pool> => {
   return refFiViewFunction({
     methodName: 'get_pool',

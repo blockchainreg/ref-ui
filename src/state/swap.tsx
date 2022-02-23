@@ -30,6 +30,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { CloseIcon } from '~components/icon/Actions';
 import db from '../store/RefDatabase';
 import { POOL_TOKEN_REFRESH_INTERVAL } from '~services/near';
+import { getExpectedOutputFromActions } from '~services/smartRouteLogic';
 
 const ONLY_ZEROS = /^0*\.?0*$/;
 
@@ -177,28 +178,40 @@ export const useSwap = ({
             (e) => e.status === PoolMode.PARALLEL
           );
 
-          if (isParallelSwap) {
-            if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
-              setCanSwap(true);
-              setSwapsToDo(estimates);
-              setAverageFee(estimates);
-              const estimate = estimates.reduce((pre, cur) => {
-                return scientificNotationToString(
-                  BigNumber.sum(pre, cur.estimate).toString()
-                );
-              }, '0');
-              if (!loadingTrigger) setTokenOutAmount(estimate);
-            }
-          } else {
-            if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
-              setCanSwap(true);
-              setSwapsToDo(estimates);
+          // if (isParallelSwap) {
+          //   if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
+          //     setCanSwap(true);
+          //     setSwapsToDo(estimates);
+          //     setAverageFee(estimates);
+          //     const estimate = estimates.reduce((pre, cur) => {
+          //       return scientificNotationToString(
+          //         BigNumber.sum(pre, cur.estimate).toString()
+          //       );
+          //     }, '0');
+          //     if (!loadingTrigger) setTokenOutAmount(estimate);
+          //   }
+          // } else {
+          //   if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
+          //     setCanSwap(true);
+          //     setSwapsToDo(estimates);
 
-              setAvgFee(
-                Number(estimates[0].pool.fee) + Number(estimates[1].pool.fee)
+          //     setAvgFee(
+          //       Number(estimates[0].pool.fee) + Number(estimates[1].pool.fee)
+          //     );
+          //     if (!loadingTrigger) setTokenOutAmount(estimates[1].estimate);
+          //   }
+          if (tokenInAmount && !ONLY_ZEROS.test(tokenInAmount)) {
+            setCanSwap(true);
+            setSwapsToDo(estimates);
+
+            // console.log('swaps todo ', swapsToDo);
+
+            setAverageFee(estimates);
+
+            if (!loadingTrigger)
+              setTokenOutAmount(
+                getExpectedOutputFromActions(estimates, tokenOut.id).toString()
               );
-              if (!loadingTrigger) setTokenOutAmount(estimates[1].estimate);
-            }
           }
           setPool(estimates[0].pool);
         })
