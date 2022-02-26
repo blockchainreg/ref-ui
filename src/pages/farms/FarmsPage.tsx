@@ -395,6 +395,7 @@ export function FarmsPage() {
       // listAll.sort(function (a: any, b: any) {
       //   return b.length - a.length;
       // });
+      console.log('farm list', listAll); // todo
       listAll.sort((item1: any, item2: any) => {
         const item1List = JSON.parse(JSON.stringify(item1));
         const item2List = JSON.parse(JSON.stringify(item2));
