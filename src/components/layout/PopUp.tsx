@@ -65,7 +65,7 @@ export default function PopUpSwiper() {
               <div
                 className="relative cursor-pointer"
                 onClick={() => {
-                  history.push('/farms?sort=new');
+                  history.push('/farms?sort=default');
                 }}
               >
                 <CircleCloseBtn
@@ -79,7 +79,7 @@ export default function PopUpSwiper() {
               <div
                 className="relative cursor-pointer"
                 onClick={() => {
-                  history.push('/farms?sort=new');
+                  history.push('/farms?sort=default');
                 }}
               >
                 <CircleCloseBtn
