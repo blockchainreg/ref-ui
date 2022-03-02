@@ -28,7 +28,7 @@ import './global.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { FarmsPage } from '~pages/farms/FarmsPage';
 import { AirdropPage } from '~pages/AirdropPage';
-import PopUp from '~components/layout/PopUp';
+import PopUpSwiper from '~components/layout/PopUp';
 import { isMobile } from '~utils/device';
 
 Modal.defaultStyles = {
@@ -93,7 +93,7 @@ function App() {
           <Route path="/" component={AutoHeight(SwapPage)} />
         </Switch>
         <Footer />
-        <PopUp></PopUp>
+        <PopUpSwiper></PopUpSwiper>
       </div>
     </Router>
   );

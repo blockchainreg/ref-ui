@@ -393,7 +393,14 @@ input[type='range']::-webkit-slider-thumb {
     transform: translateZ(10px);
   }
 }
-
+.swiper-container {
+  width: 292px;
+  height: 134px;
+}
+.swiper-wrapper {
+  width: 100%;
+  height: 100%;
+}
 .menu-max-height {
   max-height: calc(100vh - 80px);
   overflew-y: scroll;
