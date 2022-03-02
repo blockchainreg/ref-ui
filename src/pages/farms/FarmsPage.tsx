@@ -153,7 +153,11 @@ export function FarmsPage() {
   }, [count]);
   useEffect(() => {
     const sort_from_url = new URLSearchParams(location.search).get('sort');
-    if (sort_from_url && sort_from_url != searchData.sort) {
+    const status_from_url = +new URLSearchParams(location.search).get('status');
+    if (
+      (sort_from_url && sort_from_url != searchData.sort) ||
+      (status_from_url && status_from_url != searchData.status)
+    ) {
       searchData.sort = sort_from_url;
       searchData.status = 1;
       setSearchData(Object.assign({}, searchData));
