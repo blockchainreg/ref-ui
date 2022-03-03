@@ -340,7 +340,8 @@ export function FarmsPage() {
     let commonSeedFarmsNew = JSON.parse(
       JSON.stringify(tempCommonSeedFarms || commonSeedFarms)
     );
-    let noData = true;
+    let noData;
+    listAll.length && (noData = true);
     listAll.forEach((item: any) => {
       const { userStaked, pool, seed_id, farm_id } = item[0];
       const isEnd = isEnded(item);

@@ -311,7 +311,7 @@ function ImgC() {
   return (
     <div className="flex justify-end relative xs:justify-center md:justify-center">
       <IncentivePopup></IncentivePopup>
-      <LoveIcon className="absolute left-10 -top-3"></LoveIcon>
+      <LoveIcon className="absolute left-10 top-0"></LoveIcon>
       <label className="absolute gold top-11 right-7"></label>
     </div>
   );
