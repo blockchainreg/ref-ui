@@ -20,12 +20,12 @@ import { IncentivePopup, LoveIcon, CloseButton } from '~components/icon/Farm';
 import { ModalCloseAuto } from '~components/icon';
 import { isMobile } from '~utils/device';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.min.css';
+// import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
-import 'swiper/components/navigation/navigation.min.css';
-import 'swiper/components/pagination/pagination.min.css';
-import SwiperCore, { Autoplay, Pagination } from 'swiper';
-SwiperCore.use([Autoplay, Pagination]);
+// import 'swiper/components/navigation/navigation.min.css';
+// import 'swiper/components/pagination/pagination.min.css';
+import SwiperCore, { Autoplay } from 'swiper';
+SwiperCore.use([Autoplay]);
 
 export default function PopUpSwiper() {
   const [closeStatus, setCloseStatus] = useState(true);
