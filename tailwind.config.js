@@ -90,6 +90,9 @@ module.exports = {
         blueTip: '#0A7AFF',
         darkGreenColor: '#009A2B',
         riskTextColor: '#BEBEBE',
+        priceBoardColor: '#172128',
+        lightGreenColor: '#7DFF50',
+        lightRedColor: '#FF7575',
       },
       fontFamily: {
         sans: ['Poppins', ...defaultTheme.fontFamily.sans],
@@ -111,11 +114,11 @@ module.exports = {
   },
   variants: {
     extend: {
-      opacity: ['disabled'],
+      opacity: ['disabled', 'hover'],
       borderWidth: ['hover'],
       backgroundImage: ['hover'],
       cursor: ['disabled'],
-      padding: ['last'],
+      padding: ['last', 'hover'],
       display: ['hover'],
     },
   },

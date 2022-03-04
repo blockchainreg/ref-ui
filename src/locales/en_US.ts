@@ -350,5 +350,7 @@ const en_US = {
   mulitple: 'Multiple',
   default: 'Default',
   vi_go_live: 'Vietnamese goes live!',
+  price_board: 'Price board',
+  close: 'close',
 };
 export default en_US;

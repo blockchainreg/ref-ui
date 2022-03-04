@@ -337,5 +337,7 @@ const zh_CN = {
   mulitple: '倍率',
   default: '默认',
   vi_go_live: '越南版上线啦',
+  price_board: '价格面板',
+  close: '关闭',
 };
 export default zh_CN;

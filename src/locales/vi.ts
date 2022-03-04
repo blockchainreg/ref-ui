@@ -355,5 +355,7 @@ const vi = {
   mulitple: 'Cặp được nhân',
   default: 'mặc định',
   vi_go_live: 'Việt phát trực tiếp!',
+  price_board: 'Bảng giá',
+  close: 'gần',
 };
 export default vi;
